@@ -1,42 +1,47 @@
 /*
- * 
+ * Fuzzy Image Computing Machine - A jQuery Plugin for virtual imagescrolling, based on Mika Tuupola's lazyloader
+ *
+ * Copyright (c) 2015 Ryan Carlton
+ *
  * Licensed under the MIT license:
- * http://www.opensource.org/licenses/mit-license.php
+ *   http://www.opensource.org/licenses/mit-license.php
+ *
  * Version:  1.9.9
  *
  */
-(function($, window, document, undefined) {
+
+(function ($, window, document, undefined) {
     var $window = $(window);
 
-    $.fn.lazyload = function(options) {
+    $.fn.fuzzyImageComputingMachine = function (options) {
         var elements = this;
         var $container;
         var settings = {
-            threshold       : 0,
-            failure_limit   : 0,
-            event           : "scroll",
-            effect          : "show",
-            container       : window,
-            data_attribute  : "original",
-            skip_invisible  : true,
-            appear          : null,
-            load            : null,
-            placeholder     : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
+            threshold: 0,
+            failure_limit: 0,
+            event: "scroll",
+            effect: "show",
+            container: window,
+            data_attribute: "original",
+            skip_invisible: true,
+            appear: null,
+            load: null,
+            placeholder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
         };
 
         function update() {
             var counter = 0;
 
-            elements.each(function() {
+            elements.each(function () {
                 var $this = $(this);
                 if (settings.skip_invisible && !$this.is(":visible")) {
                     return;
                 }
-                if ($.abovethetop(this, settings) ||
-                    $.leftofbegin(this, settings)) {
+                if ($.abovethetop(this, settings)) {
+                    console.log("disappear fired.");
                     $this.trigger("disappear");
-                } else if (!$.belowthefold(this, settings) &&
-                    !$.rightoffold(this, settings)) {
+                    counter = 0;
+                } else if (!$.belowthefold(this, settings) && !$.rightoffold(this, settings)) {
                     $this.trigger("appear");
                     /* if we found an image we'll load, reset the counter */
                     counter = 0;
@@ -49,7 +54,7 @@
 
         }
 
-        if(options) {
+        if (options) {
             /* Maain BC for a couple of versions. */
             if (undefined !== options.failurelimit) {
                 options.failure_limit = options.failurelimit;
@@ -68,19 +73,19 @@
         settings.container === window) ? $window : $(settings.container);
 
         /* Fire one scroll event per scroll. Not one scroll event per image. */
-/*        if (0 === settings.event.indexOf("scroll")) {
-            $container.bind(settings.event, function() {
-                return update();
-            });
-        }*/
+        /*        if (0 === settings.event.indexOf("scroll")) {
+         $container.bind(settings.event, function() {
+         return update();
+         });
+         }*/
         if (0 === settings.event.indexOf("scroll")) {
-            $container.unbind('.ll');
-            $container.bind(settings.event + '.ll', function (event) {
+            $container.unbind('.ficm');
+            $container.bind(settings.event + '.ficm', function (event) {
                 return update();
             });
         }
 
-        this.each(function() {
+        this.each(function () {
             var self = this;
             var $self = $(self);
 
@@ -94,14 +99,14 @@
             }
 
             /* When appear is triggered load original image. */
-            $self.one("appear", function() {
+            $self.one("appear", function () {
                 if (!this.loaded) {
                     if (settings.appear) {
                         var elements_left = elements.length;
                         settings.appear.call(self, elements_left, settings);
                     }
                     $("<img />")
-                        .bind("load", function() {
+                        .bind("load", function () {
 
                             var original = $self.attr("data-" + settings.data_attribute);
                             $self.hide();
@@ -115,10 +120,10 @@
                             self.loaded = true;
 
                             /* Remove image from array so it is not looped next time. */
-                            var temp = $.grep(elements, function(element) {
-                                return !element.loaded;
+                            /*var temp = $.grep(elements, function (element) {
+                                return !element.loaded; removed this code so that all elements will be calculated each time.
                             });
-                            elements = $(temp);
+                            elements = $(temp);*/
 
                             if (settings.load) {
                                 var elements_left = elements.length;
@@ -130,16 +135,18 @@
                     /*todo custom unbind*/
                 }
             });
-            $self.one("disappear", function() {
+            $self.one("disappear", function () {
+                debugger;
                 if (this.loaded) {
-
+                    var original = $self.attr("data-" + settings.data_attribute);
+                    $.fn.log("disappear message: " + original);
                 }
             });
             /* When wanted event is triggered load original image */
             /* by triggering appear.                              */
             if (0 !== settings.event.indexOf("scroll")) {
-                $self.unbind(settings.event + ".ll");
-                $self.bind(settings.event + ".ll", function (event) {
+                $self.unbind(settings.event + ".ficm");
+                $self.bind(settings.event + ".ficm", function (event) {
                     if (!self.loaded) {
                         $self.trigger("appear");
                     }
@@ -148,8 +155,8 @@
         });
 
         /* Check if something appears when window is resized. */
-        $window.unbind("resize.ll");
-        $window.bind("resize.ll", function (event) {
+        $window.unbind("resize.ficm");
+        $window.bind("resize.ficm", function (event) {
             update();
         });
 
@@ -157,10 +164,10 @@
         /* Non optimal workaround. */
 
         if ((/(?:iphone|ipod|ipad).*os 5/gi).test(navigator.appVersion)) {
-            $window.unbind("pageshow.ll");
-            $window.bind("pageshow.ll", function (event) {
+            $window.unbind("pageshow.ficm");
+            $window.bind("pageshow.ficm", function (event) {
                 if (event.originalEvent && event.originalEvent.persisted) {
-                    elements.each(function() {
+                    elements.each(function () {
                         $(this).trigger("appear");
                     });
                 }
@@ -168,7 +175,7 @@
         }
 
         /* Force initial check if images should appear. */
-        $(document).ready(function() {
+        $(document).ready(function () {
             update();
         });
 
@@ -178,7 +185,7 @@
     /* Convenience methods in jQuery namespace.           */
     /* Use as  $.belowthefold(element, {threshold : 100, container : window}) */
 
-    $.belowthefold = function(element, settings) {
+    $.belowthefold = function (element, settings) {
         var fold;
 
         if (settings.container === undefined || settings.container === window) {
@@ -190,9 +197,8 @@
         return fold <= $(element).offset().top - settings.threshold;
     };
 
-    $.rightoffold = function(element, settings) {
+    $.rightoffold = function (element, settings) {
         var fold;
-
         if (settings.container === undefined || settings.container === window) {
             fold = $window.width() + $window.scrollLeft();
         } else {
@@ -202,19 +208,19 @@
         return fold <= $(element).offset().left - settings.threshold;
     };
 
-    $.abovethetop = function(element, settings) {
+    $.abovethetop = function (element, settings) {
         var fold;
-
         if (settings.container === undefined || settings.container === window) {
             fold = $window.scrollTop();
         } else {
             fold = $(settings.container).offset().top;
         }
-
+        console.log("fold:"+fold);
+        console.log("rightside:"+$(element).offset().top);
         return fold >= $(element).offset().top + settings.threshold  + $(element).height();
     };
 
-    $.leftofbegin = function(element, settings) {
+    $.leftofbegin = function (element, settings) {
         var fold;
 
         if (settings.container === undefined || settings.container === window) {
@@ -226,9 +232,8 @@
         return fold >= $(element).offset().left + settings.threshold + $(element).width();
     };
 
-    $.inviewport = function(element, settings) {
-        return !$.rightoffold(element, settings) && !$.leftofbegin(element, settings) &&
-            !$.belowthefold(element, settings) && !$.abovethetop(element, settings);
+    $.inviewport = function (element, settings) {
+        return !$.rightoffold(element, settings) && !$.leftofbegin(element, settings) && !$.belowthefold(element, settings) && !$.abovethetop(element, settings);
     };
 
     /* Custom selectors for your convenience.   */
@@ -236,15 +241,31 @@
     /* $("img").filter(":below-the-fold").something() which is faster */
 
     $.extend($.expr[":"], {
-        "below-the-fold" : function(a) { return $.belowthefold(a, {threshold : 0}); },
-        "above-the-top"  : function(a) { return !$.belowthefold(a, {threshold : 0}); },
-        "right-of-screen": function(a) { return $.rightoffold(a, {threshold : 0}); },
-        "left-of-screen" : function(a) { return !$.rightoffold(a, {threshold : 0}); },
-        "in-viewport"    : function(a) { return $.inviewport(a, {threshold : 0}); },
+        "below-the-fold": function (a) {
+            return $.belowthefold(a, {threshold: 0});
+        },
+        "above-the-top": function (a) {
+            return !$.belowthefold(a, {threshold: 0});
+        },
+        "right-of-screen": function (a) {
+            return $.rightoffold(a, {threshold: 0});
+        },
+        "left-of-screen": function (a) {
+            return !$.rightoffold(a, {threshold: 0});
+        },
+        "in-viewport": function (a) {
+            return $.inviewport(a, {threshold: 0});
+        },
         /* Maintain BC for couple of versions. */
-        "above-the-fold" : function(a) { return !$.belowthefold(a, {threshold : 0}); },
-        "right-of-fold"  : function(a) { return $.rightoffold(a, {threshold : 0}); },
-        "left-of-fold"   : function(a) { return !$.rightoffold(a, {threshold : 0}); }
+        "above-the-fold": function (a) {
+            return !$.belowthefold(a, {threshold: 0});
+        },
+        "right-of-fold": function (a) {
+            return $.rightoffold(a, {threshold: 0});
+        },
+        "left-of-fold": function (a) {
+            return !$.rightoffold(a, {threshold: 0});
+        }
     });
 
 })(jQuery, window, document);
