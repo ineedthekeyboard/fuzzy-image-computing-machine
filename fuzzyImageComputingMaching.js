@@ -43,7 +43,6 @@
                     counter = 0;
                 } else if (!$.belowthefold(this, settings) && !$.rightoffold(this, settings)) {
                     $this.trigger("appear");
-                    $.fn.log("appear");
                     /* if we found an image we'll load, reset the counter */
                     counter = 0;
                 } else {
@@ -100,9 +99,21 @@
             }
 
             /* When appear is triggered load original image. */
-            $self.one("appear", function () {
+            $self.on("appear", function () {
                 if (!this.loaded) {
-                    if (settings.appear) {
+                    console.log("image number:" + $self.attr("data-number") + " appeared");
+                    var original = $self.attr("data-" + settings.data_attribute);
+                    $self.hide();
+                    if ($self.is("img")) {
+                        $self.attr("src", original);
+                    } else {
+                        $self.css("background-image", "url('" + original + "')");
+                    }
+                    $self[settings.effect](settings.effect_speed);
+
+                    self.loaded = true;
+
+                    /*if (settings.appear) {
                         var elements_left = elements.length;
                         settings.appear.call(self, elements_left, settings);
                     }
@@ -133,17 +144,16 @@
                                 settings.load.call(self, elements_left, settings);
                             }
                         })
-                        .attr("src", $self.attr("data-" + settings.data_attribute));
-                } else {
-                    /*todo custom unbind*/
+                     .attr("src", $self.attr("data-" + settings.data_attribute));*/
                 }
             });
-            $self.one("disappear", function () {
+            $self.on("disappear", function () {
                 if (this.loaded) {
+                    console.log("image number:" + $self.attr("data-number") + " disappeared");
                     var original = $self.attr("data-" + settings.data_attribute);
                     $self.attr('src', '');
                     self.loaded = false;
-                    $.fn.log("disappear message: " + original);
+                    console.log("disappear message: " + original);
                 }
             });
             /* When wanted event is triggered load original image */

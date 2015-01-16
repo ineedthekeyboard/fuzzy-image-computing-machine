@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<div class="container" style="overflow-y:auto; height:800px; width:100%; text-align:center;">
+<div class="container" style="overflow-y:auto; height:800px; width:85%; text-align:center; margin-right:25px;">
     <div class="image">
     </div>
 </div>
@@ -17,13 +17,14 @@
 <script>
     var arrHtml = [];
     for (var i = 1; i < 10; i++) {
-        arrHtml.push('<img class="lazy" data-original="testImage.jpg" width="100%"/>');
+        arrHtml.push('<img class="lazy" data-original="testImage.jpg" width="100%" height="800px" data-number="' + i + '"/>');
+        arrHtml.push('<div>Image Number:' + i + '</div>')
     }
     $('.image').append(arrHtml.join(''));
     $('.image img.lazy').fuzzyImageComputingMachine({
         effect: "fadeIn",
         container: $('.container'),
-        unload: false
+        unload: true
     });
 </script>
 </html>
