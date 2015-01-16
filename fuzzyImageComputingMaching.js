@@ -26,6 +26,7 @@
             skip_invisible: true,
             appear: null,
             load: null,
+            unload: false,
             placeholder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
         };
 
@@ -37,12 +38,12 @@
                 if (settings.skip_invisible && !$this.is(":visible")) {
                     return;
                 }
-                if ($.abovethetop(this, settings)) {
-                    console.log("disappear fired.");
+                if (settings.unload && $.abovethetop(this, settings)) {
                     $this.trigger("disappear");
                     counter = 0;
                 } else if (!$.belowthefold(this, settings) && !$.rightoffold(this, settings)) {
                     $this.trigger("appear");
+                    $.fn.log("appear");
                     /* if we found an image we'll load, reset the counter */
                     counter = 0;
                 } else {
@@ -119,11 +120,13 @@
 
                             self.loaded = true;
 
-                            /* Remove image from array so it is not looped next time. */
-                            /*var temp = $.grep(elements, function (element) {
-                                return !element.loaded; removed this code so that all elements will be calculated each time.
-                            });
-                            elements = $(temp);*/
+
+                            if (!settings.unload) {
+                                var temp = $.grep(elements, function (element) {
+                                    return !element.loaded;
+                                });
+                                elements = $(temp);
+                            }
 
                             if (settings.load) {
                                 var elements_left = elements.length;
@@ -136,9 +139,10 @@
                 }
             });
             $self.one("disappear", function () {
-                debugger;
                 if (this.loaded) {
                     var original = $self.attr("data-" + settings.data_attribute);
+                    $self.attr('src', '');
+                    self.loaded = false;
                     $.fn.log("disappear message: " + original);
                 }
             });
@@ -215,9 +219,9 @@
         } else {
             fold = $(settings.container).offset().top;
         }
-        console.log("fold:"+fold);
-        console.log("rightside:"+$(element).offset().top);
-        return fold >= $(element).offset().top + settings.threshold  + $(element).height();
+        console.log("fold:" + fold);
+        console.log("rightside:" + $(element).offset().top);
+        return fold >= $(element).offset().top + settings.threshold + $(element).height() + 150;
     };
 
     $.leftofbegin = function (element, settings) {

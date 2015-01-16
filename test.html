@@ -3,8 +3,27 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Fuzzy Image Computing Machine Test HTML</title>
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="fuzzyImageComputingMaching.js"></script>
 </head>
 <body>
 
+<div class="container" style="overflow-y:auto; height:800px; width:100%; text-align:center;">
+    <div class="image">
+    </div>
+</div>
+
 </body>
+<script>
+    var arrHtml = [];
+    for (var i = 1; i < 10; i++) {
+        arrHtml.push('<img class="lazy" data-original="testImage.jpg" width="100%"/>');
+    }
+    $('.image').append(arrHtml.join(''));
+    $('.image img.lazy').fuzzyImageComputingMachine({
+        effect: "fadeIn",
+        container: $('.container'),
+        unload: false
+    });
+</script>
 </html>
