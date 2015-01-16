@@ -6,7 +6,7 @@
  * Licensed under the MIT license:
  *   http://www.opensource.org/licenses/mit-license.php
  *
- * Version:  1.9.9
+ * Version:  2.0.0
  *
  */
 
@@ -72,7 +72,7 @@
         $container = (settings.container === undefined ||
         settings.container === window) ? $window : $(settings.container);
 
-        /* Fire one scroll event per scroll. Not one scroll event per image. */
+        /* Fire one scroll event per scroll. Noty one scroll event per image. */
         /*        if (0 === settings.event.indexOf("scroll")) {
          $container.bind(settings.event, function() {
          return update();
@@ -101,7 +101,6 @@
             /* When appear is triggered load original image. */
             $self.on("appear", function () {
                 if (!this.loaded) {
-                    console.log("image number:" + $self.attr("data-number") + " appeared");
                     var original = $self.attr("data-" + settings.data_attribute);
                     $self.hide();
                     if ($self.is("img")) {
@@ -116,11 +115,9 @@
             });
             $self.on("disappear", function () {
                 if (this.loaded) {
-                    console.log("image number:" + $self.attr("data-number") + " disappeared");
                     var original = $self.attr("data-" + settings.data_attribute);
                     $self.attr('src', '');
                     self.loaded = false;
-                    console.log("disappear message: " + original);
                 }
             });
             /* When wanted event is triggered load original image */
@@ -196,9 +193,7 @@
         } else {
             fold = $(settings.container).offset().top;
         }
-        console.log("fold:" + fold);
-        console.log("rightside:" + $(element).offset().top);
-        return fold >= $(element).offset().top + settings.threshold + $(element).height() + 150;
+        return fold >= $(element).offset().top + settings.threshold + $(element).height();
     };
 
     $.leftofbegin = function (element, settings) {
