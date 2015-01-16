@@ -141,7 +141,7 @@
             update();
         });
 
-        /* With IOS5 force loading images when navigating with back button. */
+        /* With IOS5 force loading images when navigatindddg with back button. */
         /* Non optimal workaround. */
 
         if ((/(?:iphone|ipod|ipad).*os 5/gi).test(navigator.appVersion)) {
@@ -163,7 +163,7 @@
         return this;
     };
 
-    /* Convenience methods in jQuery namespace.           */
+    /* Convenience methods in jQuery namespace.          */
     /* Use as  $.belowthefold(element, {threshold : 100, container : window}) */
 
     $.belowthefold = function (element, settings) {
