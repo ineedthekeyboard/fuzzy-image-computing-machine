@@ -1,6 +1,6 @@
 {
   "name": "fuzzy-image-computing-machine",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "homepage": "https://github.com/ineedthekeyboard/fuzzy-image-computing-machine",
   "authors": [
     "rcarlton <ryan.lee.carlton@gmail.com>"
@@ -23,7 +23,7 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "~2.1.3"
+    "jquery": "~1.11.2"
   },
   "repository": {
     "type": "git",
