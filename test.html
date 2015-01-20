@@ -3,7 +3,9 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Fuzzy Image Computing Machine Test HTML</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
     <script src="fuzzyImageComputingMachine.min.js"></script>
 </head>
 <body>
@@ -12,11 +14,13 @@
     <div class="image">
     </div>
 </div>
+<br>
 
+<div id="master" style="width:260px; margin:15px;"></div>
 </body>
 <script>
     var arrHtml = [];
-    for (var i = 1; i < 10; i++) {
+    for (var i = 1; i < 500; i++) {
         arrHtml.push('<img class="lazy" data-original="testImage.jpg" width="100%" height="800px" data-number="' + i + '"/>');
         arrHtml.push('<div>Image Number:' + i + '</div>')
     }
@@ -25,6 +29,19 @@
         effect: "fadeIn",
         container: $('.container'),
         unload: true
+    });
+    $("#master").slider({
+        orientation: "horizontal",
+        range: "min",
+        animate: true,
+        value: 60,
+        min: 25,
+        max: 100,
+        step: 1,
+        slide: function (event, ui) {
+            $('.container').css('width', ui.value + '%');
+            $('img').css('height', (ui.value * 8));
+        }
     });
 </script>
 </html>
