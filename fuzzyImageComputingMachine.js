@@ -6,7 +6,7 @@
  * Licensed under the MIT license:
  *   http://www.opensource.org/licenses/mit-license.php
  *
- * Version:  2.0.0
+ * Version:  2.0.2
  *
  */
 
@@ -113,7 +113,6 @@
                     self.loaded = true;
 
                     if (!settings.unload) {
-                        self.loaded = true;
                         var temp = $.grep(elements, function (element) {
                             return !element.loaded;
                         });
@@ -228,7 +227,7 @@
 
     /* Custom selectors for your convenience.   */
     /* Use as $("img:below-the-fold").something() or */
-    /* $("img").filter(":below-the-fold").somethinggg() which is faster */
+    /* $("img").filter(":below-the-fold").something() which is faster */
 
     $.extend($.expr[":"], {
         "below-the-fold": function (a) {
