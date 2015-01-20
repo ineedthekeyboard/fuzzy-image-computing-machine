@@ -111,6 +111,20 @@
                     $self[settings.effect](settings.effect_speed);
 
                     self.loaded = true;
+
+                    if (!settings.unload) {
+                        self.loaded = true;
+                        var temp = $.grep(elements, function (element) {
+                            return !element.loaded;
+                        });
+                        elements = $(temp);
+                    }
+
+                    if (settings.load) {
+                        var elements_left = elements.length;
+                        settings.load.call(self, elements_left, settings);
+                    }
+
                 }
             });
             $self.on("disappear", function () {
